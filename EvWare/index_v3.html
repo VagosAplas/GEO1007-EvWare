@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+
+  
+
+  <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css"/>
+<!--   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css"/> -->
+
+<link rel="stylesheet" type="text/css" href="basic/leaflet.css"/>
+
+
+
+  <link rel="stylesheet" type="text/css" href="add/leaflet.fusesearch.css"/>
+
+  <link rel="stylesheet" type="text/css" href="lib/leaflet.toolbar.css"/>
+
+  <link rel="stylesheet" type="text/css" href="lib/leaflet.label.css"/>
+  <link rel="stylesheet" type="text/css" href="lib/MarkerCluster.css"/>
+  <link rel="stylesheet" type="text/css" href="lib/MarkerCluster.Default.css"/>
+
+  <link rel="stylesheet" type="text/css" href="basic/L.Control.Sidebar.css"/>
+
+  <title>EvWare</title>
+  <style>
+    html, body, #map {
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    #sidebar input[type="text"] {
+      margin-top: 4px;
+    }
+
+    #sidebar input[type="button"] {
+      margin-top: 12px;
+    }
+
+    #searchSidebar input[type="text"] {
+      margin-top: 4px;
+    }
+
+    #searchSidebar input[type="button"] {
+      margin-top: 12px;
+    }
+
+
+h1{
+    border-bottom: 1px dashed #7F7F7F;
+    margin:-12px -24.5px 35px -24.5px;
+    padding:10px;
+    background-color:#00e68a;
+    color:#ffffff;
+    -moz-border-radius:20px 20px 0px 0px;
+    -webkit-border-top-left-radius: 20px;
+    -webkit-border-top-right-radius: 20px;
+    -khtml-border-top-left-radius: 20px;
+    -khtml-border-top-right-radius: 20px;
+    }
+
+    label {
+    
+    }
+
+    button {
+        
+    }
+
+  </style>
+</head>
+
+<body>
+<div id="map"></div>
+
+<div id="sidebar">
+ 
+  <h1 id="title">Information about the event:</h1>
+
+  <select id="eventtype" name="eventtype">
+    <option value="null">Please select a type</option>
+    <option value="lecture">Lecture</option>
+    <option value="social">Social</option>
+  </select> 
+  <label id="eventtype" name="eventtype">Event Type<br></label><br>
+
+  <input id="idTextbox" type="hidden" size="35" name="gid" readonly="readonly"/>
+
+  <input id="eventname" type="text" size="35" name="eventname"/>
+  <label id="eventname" name="eventname">Event Name<br></label><br>
+
+  <input id="eventloc" type="text" size="35" name="eventloc"/>
+  <label id="eventloc" name="eventloc">Location<br></label><br>
+
+  <input id="startdate" type="date" size="35" name="startdate"/>
+  <label id="startdate" name="startdate">Start Date</label>
+
+  <input id="stime" type="time" size="35" name="stime"/>
+  <label id="stime" name="stime">Start Time<br></label><br>
+
+  <input id="enddate" type="date" size="35" name="enddate"/>
+  <label id="enddate" name="enddate">End Date</label>
+
+  <input id="etime" type="time" size="35" name="etime"/>
+  <label id="etime" name="etime">End Time<br></label><br>
+
+  <input id="applyButton" type="button" value="Save"></input>
+
+</div>
+
+
+<div id="searchSidebar">
+ 
+  <h1 id="title">Search:</h1>
+  
+  <select id="searchevent" name="searchevent">
+    <option value="null">Type of event</option>
+    <option value="lecture">Lecture</option>
+    <option value="social">Social</option>
+  </select>
+  <label id="searchevent" name="searchevent">Event Type<br></label><br>
+
+  <input id="searcheventname" type="search" size="11" name="searcheventname"/>
+  <label id="searcheventname" name="searcheventname">Event Name<br></label><br>
+    
+  <input id="searchdate" type="date" size="10" name="searchtime"/>
+  <label id="searchtime" name="searchtime">Date<br></label><br>
+
+  <input id="searchtime" type="time" size="10" name="searchtime"/>
+  <label id="searchtime" name="searchtime">Time<br></label><br>
+  <input id="searchButton" type="button" value="Show Events"></input>
+
+
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+
+<script src="lib/leaflet.toolbar.js"></script>
+
+<script src="lib/leaflet.label.js"></script>
+
+<script src="lib/leaflet.markercluster.js"></script>
+<!-- <script src="lib/leaflet.markerclustergroup.js"></script>
+ --><script src="add/leaflet.markercluster.editablemarker.js"></script>
+
+<!-- <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' />
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' /> -->
+
+
+
+
+<script src="add/fuse.js"></script>
+<script src="add/leaflet.fusesearch.js"></script>
+
+
+<script src="basic/L.Control.Sidebar.js"></script>
+<script src="basic/Leaflet-WFST.src.js"></script>
+<script src="add/bouncemarker.js"></script>
+<script src="add/d3.min.js"></script>
+<script src="add/topojson.min.js"></script>
+<script src="add/Control.GlobeMiniMap.js"></script>
+<script src="add/spin.js"></script>
+<script src="add/spinner.options.js"></script>
+<script src="add/Leaflet.AccuratePosition.js"></script>
+<script src="add/wfsGeojson.js"></script>
+
+<script src="basic/basemaps.js"></script>
+<script src="add/localGeojson.js"></script>
+<script src="add/json_points.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+
+    // set view to first "rough" geolocation
+    map.locate({setView: true,maxZoom:14});
+
+        var circleProgress = L.circle([52, 4.375], 100 ,{color:'blue'}).addTo(map);
+        //var locateFinished = false;
+
+        function onAccuratePositionError (e) {
+            alert("reload page")
+        }
+
+        function onAccuratePositionProgress (e) {
+
+            map.setView(e.latlng);       
+            map.removeLayer(circleProgress);
+            circleProgress = L.circle(e.latlng, e.accuracy,{
+                color:'blue'}).addTo(map);
+            //locateFinished = true;
+
+        }
+
+        function onAccuratePositionFound (e) {
+            map.setView(e.latlng, 17);
+            //spinner.stop()
+            map.removeLayer(circleProgress);
+            circleProgress = L.circle(e.latlng, e.accuracy,{
+                color:'blue'}).addTo(map);
+            //alert(String(e.accuracy))
+
+        }
+
+        map.on('accuratepositionprogress', onAccuratePositionProgress);
+        map.on('accuratepositionfound', onAccuratePositionFound);
+        map.on('accuratepositionerror', onAccuratePositionError);
+
+
+        map.findAccuratePosition({
+            
+            maxWait: 5000, // does not work if value is too small
+            desiredAccuracy: 1
+        });
+
+    var disableMapInteractions = function () {
+        map.dragging.disable();
+        map.touchZoom.disable();
+        map.doubleClickZoom.disable();
+        map.scrollWheelZoom.disable();
+        map.boxZoom.disable();
+        map.keyboard.disable();
+        if (map.tap) {
+            map.tap.disable();
+        }
+    };
+    var enableMapInteractions = function () {
+        map.dragging.enable();
+        map.touchZoom.enable();
+        map.doubleClickZoom.enable();
+        map.scrollWheelZoom.enable();
+        map.boxZoom.enable();
+        map.keyboard.enable();
+        if (map.tap) {
+            map.tap.enable();
+        }
+    };
+    //disableMapInteractions();
+
+
+    // add spinner for load screen
+    var spinnerContainer = document.getElementsByTagName('body')[0];
+    var spinner = new Spinner(spinnerOptions).spin(spinnerContainer);
+    
+
+
+    // add two sidebars
+    var sidebar = L.control.sidebar('sidebar', {
+        position: 'right'
+    });
+
+    map.addControl(sidebar);
+
+    var searchSidebar = L.control.sidebar('searchSidebar', {
+        position: 'right'
+    });
+
+    map.addControl(searchSidebar);
+
+
+    //MAYA -- add the scale
+    L.control.scale({maxWidth:100}).addTo(map);
+
+    
+    //------------------
+    var markers = new L.MarkerClusterGroup({
+        showCoverageOnHover: false
+    }).addTo(map);
+
+
+    // MAYA -- do we want to change these icons???
+    var editModeMarkerIcon = new L.Icon({
+        iconUrl: 'icons/marker-icon-red.png',
+        iconRetinaUrl: 'icons/marker-icon-red-2x.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 40],
+        popupAnchor: [1, -34],
+        shadowUrl: 'icons/marker-shadow.png',
+        shadowRetinaUrl: 'icons/marker-shadow.png',
+        shadowSize: [50, 50],
+        shadowAnchor: [15, 40]
+    });
+
+    //--------------------------------------------
+
+    var createEditableMarker = function (latlng, options) {
+        var marker = new L.MarkerClusterGroup.EditableMarker(latlng || map.getCenter(), L.extend({
+            clusterGroup: markers,
+            editModeIcon: editModeMarkerIcon,
+            // symbols above marker
+            toolbarEditIconClass: 'fa fa-lg fa-pencil-square-o',
+            toolbarDeleteIconClass: 'fa fa-lg fa-trash-o',
+            toolbarCloseIconClass: 'fa-thumb-tack',
+            showLabelOnEdit: true,
+            getLabelContent: function () {
+                var latlng = marker.getLatLng();
+                var content = 'Drag marker and click edit button again.<br>' +
+            '<b>Latitude:</b> ' + latlng.lat.toFixed(6) + '<br>' +
+            '<b>Longitude:</b> ' + latlng.lng.toFixed(6);
+                return content;
+            },
+            hideToolbarAfterEdit: false
+        }, options ||  {}));
+        //bounceOnAdd: true,
+        // MAYA -- add bounce by click
+        marker.on('click', function () {
+        marker.bounce({duration: 500, height: 100});
+        });
+        //--------------------------
+
+        return marker;
+    };
+    
+    var loadFinished = false;
+    var isFirstLoad = true;
+
+    // THIS NEEDS EDITTING BY EACH USER!!!!
+    var wfst = new L.WFST({
+    url: 'http://localhost:8080/geoserver/Raphael/ows',
+    showExisting: false,
+    typeNS: 'Raphael',
+    typeName: 'eventpts',
+    primaryKeyField: 'gid',
+
+    crs: L.CRS.EPSG4326,
+    geometryField: 'ogr_geometry',
+    pointToLayer: function (featureData, latlng) {
+      return createEditableMarker(latlng);
+    }
+  });
+
+
+
+    // Sidebar
+
+    var showSidebar = function (marker) {
+        sidebar._marker = marker;
+        if (sidebar._marker.feature) {
+            document.getElementById('idTextbox').value = sidebar._marker.feature.gid || '';
+            if (sidebar._marker.feature.properties) {
+                document.getElementById('eventname').value = sidebar._marker.feature.properties.eventname || '';
+                document.getElementById('eventloc').value = sidebar._marker.feature.properties.eventloc || '';
+                document.getElementById('startdate').value = sidebar._marker.feature.properties.startdate || '';
+                document.getElementById('stime').value = sidebar._marker.feature.properties.stime || '';
+                document.getElementById('enddate').value = sidebar._marker.feature.properties.enddate || '';
+                document.getElementById('etime').value = sidebar._marker.feature.properties.etime || '';
+                e = document.getElementById('eventtype');
+                e.options[e.selectedIndex].value = sidebar._marker.feature.properties.eventtype || '';
+            }
+            sidebar._onApplyBtnClick = function () {
+                if (!sidebar._marker) {
+                    return;
+                }
+                sidebar._marker.feature.properties = sidebar._marker.feature.properties || {};
+                var propertiesChanged = false;
+                var applyPropertyValue = function (property, value) {
+                    if ((property || value) && property != value) {
+                        property = value;
+                        propertiesChanged = true;
+                    }
+                };
+                sidebar._marker.feature.properties.eventname = document.getElementById('eventname').value || null;
+                sidebar._marker.feature.properties.eventloc = document.getElementById('eventloc').value || null;
+                sidebar._marker.feature.properties.startdate = document.getElementById('startdate').value || null;
+                sidebar._marker.feature.properties.stime = document.getElementById('stime').value || null;
+                sidebar._marker.feature.properties.enddate = document.getElementById('enddate').value || null;
+                sidebar._marker.feature.properties.etime = document.getElementById('etime').value || null;
+                f = document.getElementById('eventtype');
+                sidebar._marker.feature.properties.eventtype = f.options[f.selectedIndex].value || null;
+
+                if (propertiesChanged) {
+                    sidebar._marker.fire('marker:edited');
+                }
+
+                spinner.spin(spinnerContainer);
+                wfst.save();
+
+            };
+            var applyBtn = document.getElementById('applyButton');
+            L.DomEvent.on(applyBtn, 'click', sidebar._onApplyBtnClick);
+        }
+        sidebar.show();
+    };
+
+    var hideSidebar = function () {
+        if (sidebar._marker && sidebar._marker._popupToolbar && sidebar._marker._popupToolbar._removeToolbar) {
+            sidebar._marker._popupToolbar._removeToolbar();
+        }
+        var applyBtn = document.getElementById('applyButton');
+        if (sidebar._onApplyBtnClick) {
+            L.DomEvent.off(applyBtn, 'click', sidebar._onApplyBtnClick);
+        }
+        sidebar._marker = undefined;
+        sidebar._onApplyBtnClick = undefined;
+        sidebar.hide();
+    };
+    L.DomEvent.on(sidebar.getCloseButton(), 'click', function () {
+        hideSidebar();
+    });
+
+    var addWfstMarker = function (marker) {
+        marker.on('marker:edited', function () {
+            wfst.editLayer(marker);
+            //alert(marker.feature.gid)
+
+        });
+        marker.on('marker:deleted', function () {
+            wfst.removeLayer(marker);
+        });
+        marker.on('popuptoolbar:shown', function () {
+            showSidebar(marker);
+        });
+        marker.on('popuptoolbar:closed', function () {
+            hideSidebar();
+        });
+        if (!markers.hasLayer(marker)) {
+            markers.addLayer(marker);
+        }
+        if (!wfst.hasLayer(marker)) {
+            wfst.addLayer(marker);
+        }
+    };
+
+    // wfst.on('load', function (e) {
+    //     spinner.stop();
+    //     enableMapInteractions();
+    //     markers.clearLayers();
+    //     e.target.eachLayer(function (layer) {
+    //         addWfstMarker(layer);
+    //     });
+    //     if (isFirstLoad) {
+    //         map.fitBounds(markers);
+    //         isFirstLoad = false;
+    //     }
+    //     loadFinished = true;
+    // });
+    
+    spinner.stop();
+    loadFinished = true;
+
+    wfst.on('save:success', function (data) {
+        spinner.stop();
+    });
+    wfst.on('save:error', function (data) {
+        spinner.stop();
+        alert('WFS-T save error occured. Take a look to console.');
+        console.error('WFS-T save error');
+        console.error(data);
+    });
+
+    // sidebar 2
+   var clickSearchBtn = function () {
+
+
+
+
+//search.eventlocation = document.getElementById('eventlocation').value || null;
+
+//alert(search.eventlocation)
+
+                // document.getElementById('eventlocation').value = sidebar._marker.feature.properties.eventlocation || '';
+                // document.getElementById('startdate').value = sidebar._marker.feature.properties.startdate || '';
+                // document.getElementById('stime').value = sidebar._marker.feature.properties.stime || '';
+                // document.getElementById('enddate').value = sidebar._marker.feature.properties.enddate || '';
+                // document.getElementById('etime').value = sidebar._marker.feature.properties.etime || '';
+                // e = document.getElementById('eventtype');
+                // e.options[e.selectedIndex].value = sidebar._marker.feature.properties.eventtype || '';
+
+
+                // search.properties = document.getElementById('eventname').value || null;
+                // sidebar._marker.feature.properties.eventlocation = document.getElementById('eventlocation').value || null;
+                // sidebar._marker.feature.properties.startdate = document.getElementById('startdate').value || null;
+                // sidebar._marker.feature.properties.stime = document.getElementById('stime').value || null;
+                // sidebar._marker.feature.properties.enddate = document.getElementById('enddate').value || null;
+                // sidebar._marker.feature.properties.etime = document.getElementById('etime').value || null;
+                // f = document.getElementById('eventtype');
+                // sidebar._marker.feature.properties.eventtype = f.options[f.selectedIndex].value || null;
+
+                // if (propertiesChanged) {
+                //     sidebar._marker.fire('marker:edited');
+                // };
+
+            // var sidebar2._onSearchBtnClick = function () {};
+            
+            var isFirstLoad2 = false
+var onSearchBtnClick = function () {
+
+
+
+
+
+
+var search = {};
+
+search.eventname = document.getElementById('searcheventname').value;
+search.eventtype = document.getElementById('searchevent').value;
+
+
+
+
+//alert(document.getElementById('eventname2').value);
+//alert('here');
+
+
+                //var parcels_Delft = showWFS(document.getElementById('eventname2').value);
+                showWFS(search, existinglayer);
+
+                //search = sidebar._marker.feature.properties || {};
+
+
+//                 if(isFirstLoad2){
+//                 map.fitBounds(parcels_Delft);
+// };
+
+
+
+
+                };
+
+
+
+
+
+            var searchBtn = document.getElementById('searchButton');
+            L.DomEvent.on(searchBtn, 'click', onSearchBtnClick);
+
+        
+    };
+
+
+
+
+
+
+    // Toolbar
+    new L.Toolbar.Control({
+        position: 'topleft',
+        actions: [
+        //add the location button
+        L.ToolbarAction.extend({
+                options: {
+                    toolbarIcon: {
+                        className: 'fa fa-location-arrow'
+                    }
+                },
+                addHooks: function () {
+                    // if (locateFinished) {
+                    //     return;
+                    // }
+
+                    map.removeLayer(circleProgress);
+
+
+
+                    map.findAccuratePosition({
+
+                        maxWait: 5000, // does not work if value is too small
+                        desiredAccuracy: 1
+                    });
+
+
+
+                    // map.locate({ setView: true, maxZoom: 17 }).on('locationfound', function onLocationFound(e){
+                    //     L.circle(e.latlng, 9,{
+                    //         color:'green'}).bindPopup('Your are here!').addTo(map).openPopup();
+                    // }
+                    // );
+
+                    locateFinished = false;
+                }
+            }),
+        //----------------------------------------
+        //add the add marker button
+        L.ToolbarAction.extend({
+            options: {
+                toolbarIcon: {
+                    className: 'fa fa-map-marker'
+                }
+            },
+            addHooks: function () {
+                if (!loadFinished) {
+                    return;
+                }
+                var newMarker = createEditableMarker(map.getCenter(), {
+                    dontShowToolbarOnFirstClick: true
+                    
+                });
+                newMarker.setIcon(newMarker.options.editModeIcon);
+                getLabelContent = function () {
+                    var latlng = newMarker.getLatLng();
+                    var content = 'Click to finish adding.<br>' +
+                '<b>Latitude:</b> ' + latlng.lat.toFixed(6) + '<br>' +
+                '<b>Longitude:</b> ' + latlng.lng.toFixed(6);
+                    return content;
+                }
+
+                
+
+                var startAdding = function (e) {
+                    newMarker.setLatLng(e.latlng);
+                    map.addLayer(newMarker);
+                    newMarker.bindLabel(getLabelContent(), {
+                        noHide: true,
+                        direction: 'auto',
+                        pane: map.getPanes.popupPane
+                    });
+                    newMarker.showLabel();
+                };
+                var processAdding = function (e) {
+                    if (map.hasLayer(newMarker)) {
+                        newMarker.setLatLng(e.latlng);
+                    }
+                    ;
+                    if (newMarker.label) {
+                        newMarker.updateLabelContent(getLabelContent());
+                    }
+                };
+                var finishAdding = function (e) {
+                    map.off('mousemove', startAdding);
+                    map.off('mousemove', processAdding);
+                    map.off('click', finishAdding);
+                    newMarker.off('click', finishAdding);
+                    if (map.hasLayer(newMarker)) {
+                        map.removeLayer(newMarker);
+                    }
+                    if (newMarker.label) {
+                        newMarker.hideLabel();
+                        newMarker.unbindLabel();
+                    }
+                    newMarker.setIcon(newMarker.options.normalModeIcon);
+                    addWfstMarker(newMarker);
+
+                };
+                map.once('mousemove', startAdding);
+                map.on('mousemove', processAdding);
+                map.once('click', finishAdding);
+                newMarker.once('click', finishAdding)
+            }
+        }),
+        //add search button
+                L.ToolbarAction.extend({
+            options: {
+                toolbarIcon: {
+                    className: 'fa fa-search'
+                }
+            },
+            addHooks: function () {
+                if (!loadFinished) {
+                    return;
+                }
+                //loadFinished = false;
+                //disableMapInteractions();
+                searchSidebar.show();
+                clickSearchBtn();
+
+
+            }
+        })
+      ]
+    }).addTo(map);
+
+
+
+
+var existinglayer = false;
+
+
+// WFS request:
+
+var showWFS = function(fet, existinglayer) {
+
+
+var url = 'http://localhost:8080/geoserver/Raphael/ows?';
+
+// These are the basic parameters for a WFS request (let op: epsg is 4326 voor Leaflet WFS):
+var params = 'service=WFS&version=2.0.0&request=GetFeature&outputFormat=application/json&srsName=EPSG:4326&'
+// + Specify the WFS feature type that you request from the WFS service
+// In this case the CBS buurten (=neighbourhoods) 2014:
+params += 'typeName=Raphael:eventpts&';
+
+
+// If problems with loading time: limit amount of features (for debug)
+//params += 'maxFeatures=2&';
+//params += 'count=4&';
+
+//params += 'propertyName=akr_area,osection,geom&';
+
+
+
+//var str1 = "cql_filter=gidtext not like \'text\'" //+ fet;
+//var str1 = 'cql_filter=eventname \= ' + parseInt(fet);
+
+//alert('here')
+
+var cqlfilter = 'cql_filter='
+
+
+var str1 = cqlfilter + 'eventname \= ' + parseInt(fet.eventname); 
+//str1 += ' AND eventtype like \'lecture\'';
+str1 += (' AND eventtype like \'' + fet.event + '\'');
+//var str1 = 'cql_filter=eventtype not like \'' + String(fet.eventtype2) + '\''; 
+
+//params += str1;
+
+
+var str2 = 'cql_filter=eventtype not like \'lecture\' AND eventname \= 1'
+
+
+//var str2 = fet;
+
+//alert(str2);
+//alert(str4);
+
+//alert(typeof parseInt(fet));
+//alert(typeof str2);
+
+
+
+//params += ('cql_filter=gidtext not like ' + fet); //\'text\'';
+
+
+var styleParams = {
+            color: 'black',
+            fillColor: 'black',
+            weight: 1.0,
+            opacity: 0.6,
+            fillOpacity: 0.4
+        } ;
+
+
+
+
+
+
+
+var parcels_Delft = GeojsonFromWFS( url, params, styleParams );
+
+if(existinglayer == true)
+{map.removeLayer(parcels_Delft);
+    alert('here')
+}
+
+
+var clusterParcels = new L.MarkerClusterGroup();
+clusterParcels.addLayer(parcels_Delft);
+
+clusterParcels.addTo(map);
+
+parcels_Delft.addTo(map);
+
+map.addLayer(parcels_Delft);
+
+
+//
+
+//map.addLayer(parcels_Delft);
+
+//alert(toString().parcels_Delft);
+
+
+
+
+//map.addLayer(clusterParcels);
+
+// new L = parcels_Delft.addTo(map);
+
+// alert(parcels_Delft.type)
+
+// clusterParcels.addLayer(parcels_Delft);
+
+
+// clusterParcels.clearLayers();
+
+// parcels_Delft.addTo(map);
+
+//alert(toString(parcels_Delft.getBounds()));
+
+
+// need to make a feature group out of events (parcels_Delft)
+//map.fitBounds(clusterParcels.getBounds());
+
+
+
+        // var geoJsonLayer = L.geoJson(parcels_Delft, {
+        //     onEachFeature: function (feature, layer) {
+        //         layer.bindPopup(feature.properties.address);
+        //     }
+        // });
+        //markers.addLayer(geoJsonLayer);
+        //map.addLayer(clusterParcels);
+        //map.fitBounds(clusterParcels.getBounds());
+
+//parcels_Delft.addTo(map)
+
+
+//clusterParcels.addTo(map);
+
+//map.fitBounds(POI_example.getBounds());
+
+// if(parcels_Delft){
+
+//     alert(String(POI_example.getBounds());
+
+// removel(parcels_Delft);
+
+
+//}
+
+existinglayer = true;
+
+return existinglayer;
+};
+
+
+//POI_example.addTo(map);
+
+
+
+// var markers = L.MarkerClusterGroup();
+// //markers.addLayer(POI_example);
+
+// POI_example.addTo(map);
+
+// var overlays = {
+
+//     "POI example": POI_example,
+
+// };
+ 
+// // 3.c. this is the control for switching layers on and off - the variables baseLayers and overlays group the layers
+// L.control.layers(baseLayers, overlays).addTo(map);
+
+var removel = function(lay){
+
+map.fitBounds(lay.getBounds());
+
+
+}
+
+
+
+
+//test
+
+
+
+
+        // var geoJsonData = {
+        //     "type": "FeatureCollection", 
+        //     "features": [
+        //         { "type": "Feature", "id":"1", "properties": { "address": "2"   }, "geometry": { "type": "Point", "coordinates": [175.2209316333,-37.8210922667 ] } },
+        //         { "type": "Feature", "id":"2", "properties": { "address": "151" }, "geometry": { "type": "Point", "coordinates": [175.2238417833,-37.80975435   ] } },
+        //         { "type": "Feature", "id":"3", "properties": { "address": "21"  }, "geometry": { "type": "Point", "coordinates": [175.2169955667,-37.818193     ] } },
+        //         { "type": "Feature", "id":"4", "properties": { "address": "14"  }, "geometry": { "type": "Point", "coordinates": [175.2240856667,-37.8216963    ] } },
+        //         { "type": "Feature", "id":"5", "properties": { "address": "38B" }, "geometry": { "type": "Point", "coordinates": [175.2196982333,-37.8188702167 ] } },
+        //         { "type": "Feature", "id":"6", "properties": { "address": "38"  }, "geometry": { "type": "Point", "coordinates": [175.2209942   ,-37.8192782833 ] } }
+        //     ]
+        // };
+
+        // var geojson = L.geoJson(POI_example, {
+        //     style: function (feature) {
+        //         return {color: feature.properties.color};
+        //     },
+        //     onEachFeature: function (feature, layer) {
+        //         var popupText = 'geometry type: ' + feature.geometry.type;
+        //         if (feature.properties.color) {
+        //             popupText += '<br/>color: ' + feature.properties.color;
+        //         }
+        //         layer.bindPopup(popupText);
+        //     }
+        // });
+        // geojson.addLayer(new L.Marker(new L.LatLng(2.745530718801952, 105.194091796875)));
+        // var eye1 = new L.Marker(new L.LatLng(-0.7250783020332547, 101.8212890625));
+        // var eye2 = new L.Marker(new L.LatLng(-0.7360637370492077, 103.2275390625));
+        // var nose = new L.Marker(new L.LatLng(-1.3292264529974207, 102.5463867187));
+        // var mouth = new L.Polyline([
+        //     new L.LatLng(-1.3841426927920029, 101.7333984375),
+        //     new L.LatLng(-1.6037944300589726, 101.964111328125),
+        //     new L.LatLng(-1.6806671337507222, 102.249755859375),
+        //     new L.LatLng(-1.7355743631421197, 102.67822265625),
+        //     new L.LatLng(-1.5928123762763, 103.0078125),
+        //     new L.LatLng(-1.3292264529974207, 103.3154296875)
+        // ]);
+        
+        // var markers = L.markerClusterGroup();
+        // markers.addLayer(geojson).addLayers([eye1,eye2,nose,mouth]);
+        
+        // map.addLayer(markers);
+
+
+
+
+
+
+
+</script>
+
+<!-- <script src="add/miniglobe.options.js"></script>
+ -->
+
+</body>
+</html>
